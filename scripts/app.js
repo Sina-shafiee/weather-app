@@ -69,4 +69,19 @@ formEl.addEventListener("submit", (e) => {
       updateUi(data);
     })
     .catch((error) => console.log(error));
+
+  // storing city name on local storage
+  localStorage.setItem("city", city);
 });
+
+// checking for city name on local storage to show it
+
+const cityName = localStorage.getItem("city");
+
+if (cityName) {
+  updateCity(cityName)
+    .then((data) => {
+      updateUi(data);
+    })
+    .catch((error) => console.log(error));
+}
