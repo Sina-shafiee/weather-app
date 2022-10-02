@@ -1,10 +1,15 @@
-"use strict";
+// "use strict";
+
+import { Forecast } from "./forecast.js";
 
 // Dom elements
 const formEl = document.querySelector("#change-city");
 const contentEl = document.querySelector(".content");
 const detailsEl = document.querySelector("#details");
 const imgWrapper = document.querySelector(".status-img");
+
+//
+const forecast = new Forecast();
 
 // update ui
 const updateUi = (data) => {
@@ -35,21 +40,6 @@ const updateUi = (data) => {
   contentEl.classList.add("active");
 };
 
-// fetch data from api
-const updateCity = async (city) => {
-  // getting uniq id of city
-  const cityDetails = await getCityId(city);
-
-  // passing id to get weather details
-  const cityWeather = await getWeather(cityDetails.Key);
-
-  // returning an object from both api
-  return {
-    cityDetails: cityDetails,
-    cityWeather: cityWeather
-  };
-};
-
 // eventlistner for search input sumbit event
 formEl.addEventListener("submit", (e) => {
   // prevent browser refresh
@@ -60,10 +50,9 @@ formEl.addEventListener("submit", (e) => {
   let city = formEl.cityInput.value.trim();
   formEl.reset();
 
-  // handle search functionalty
-
   // fetch city weather
-  updateCity(city)
+  forecast
+    .updateCity(city)
     .then((data) => {
       // show fetched data on ui
       updateUi(data);
@@ -74,12 +63,12 @@ formEl.addEventListener("submit", (e) => {
   localStorage.setItem("city", city);
 });
 
-// checking for city name on local storage to show it
-
+// checking for city name on local storage to show onload
 const cityName = localStorage.getItem("city");
 
 if (cityName) {
-  updateCity(cityName)
+  forecast
+    .updateCity(cityName)
     .then((data) => {
       updateUi(data);
     })

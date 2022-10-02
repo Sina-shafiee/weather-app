@@ -1,30 +1,49 @@
-// KEY for using api
-const KEY = "kJ92Dq6NJlNiGqEBt7PndfZFOjcZcBqP";
+class Forecast {
+  constructor() {
+    this.key = "z8zq9nrdR3J7ykQD5k1qJhpCuxwxEuVs";
+    this.weatherURL =
+      "http://dataservice.accuweather.com/currentconditions/v1/";
+    this.cityURL =
+      "http://dataservice.accuweather.com/locations/v1/cities/search";
+  }
 
-// getting weather based on passed id of city
-const getWeather = async (id) => {
-  // constants
-  const API = "http://dataservice.accuweather.com/currentconditions/v1/";
-  const QUERY = `${id}?apikey=${KEY}`;
+  async updateCity(city) {
+    // getting uniq id of city
+    const cityDetails = await this.getCityId(city);
 
-  // api call response promises
-  const response = await fetch(API + QUERY);
-  const cities = await response.json();
+    // passing id to get weather details
+    const cityWeather = await this.getWeather(cityDetails.Key);
 
-  // returning the first city
-  return cities[0];
-};
+    // returning an object from both api
+    return {
+      cityDetails,
+      cityWeather
+    };
+  }
 
-// getting city id based on city name
-const getCityId = async (city) => {
-  // constants
-  const API = "http://dataservice.accuweather.com/locations/v1/cities/search/";
-  const QUERY = `?apikey=${KEY}&q=${city}`;
+  async getCityId(city) {
+    // constants
+    const QUERY = `?apikey=${this.key}&q=${city}`;
 
-  // response promises
-  const response = await fetch(API + QUERY);
-  const cities = await response.json();
+    // response promises
+    const response = await fetch(this.cityURL + QUERY);
+    const cities = await response.json();
 
-  // returning the first city
-  return cities[0];
-};
+    // returning the first city
+    return cities[0];
+  }
+
+  async getWeather(id) {
+    // constants
+    const QUERY = `${id}?apikey=${this.key}`;
+
+    // api call response promises
+    const response = await fetch(this.weatherURL + QUERY);
+    const cities = await response.json();
+
+    // returning the first city
+    return cities[0];
+  }
+}
+
+export { Forecast };
